@@ -1,0 +1,45 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3333:3333
+      - 9229:9229 # Map debug port to the host
+    command: /bin/sh -c "npm install && npm run build && npm run start:debug"
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    image: api
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./:/api
+      - ./node_modules:/api/node_modules
+    networks:
+      - network
+
+  postgres:
+    image: postgres:alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - network
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

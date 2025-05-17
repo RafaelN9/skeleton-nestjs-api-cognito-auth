@@ -1,0 +1,6 @@
+{
+  "type": "postgres",
+  "database": ":memory:",
+  "entities": ["src/domain/**/entity/*.entity.ts"],
+  "synchronize": true
+}
